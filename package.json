@@ -1,0 +1,29 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Kiosk api",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "fix": "standard --fix",
+    "test": "standard"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-snap7": "^1.0.7",
+    "pino": "^9.3.2",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.47.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "standard": "^17.1.0"
+  },
+  "standard": {
+    "ignore": [
+      "/node_modules/**",
+      "/public"
+    ]
+  }
+}
