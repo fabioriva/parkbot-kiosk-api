@@ -26,6 +26,13 @@ const PIN = {
   amount: 2,
   wordLen: 0x02
 }
+const TAG = {
+  area: 0x84,
+  dbNr: 37,
+  start: 8,
+  amount: 8,
+  wordLen: 0x02
+}
 const PATH = '/api/kiosk'
 
 const main = async () => {
@@ -78,6 +85,29 @@ const main = async () => {
           const done = await plc.write(area, dbNr, start, amount, wordLen, buffer)
           // console.log(buffer, done)
           sendJson(res, json)
+        })
+    })
+    app.post(PATH + '/tag', async (res, req) => {
+      log(req)
+      // res.onAborted(() => {
+      //   res.aborted = true
+      // })
+      // sendJson(res, { hello: 'world' })
+      readJson(
+        res,
+        async json => {
+          const { id } = json
+          // const s = id.toString(16)
+          // console.log(typeof s, s)
+          // const hex = parseInt(s, 16)
+          // console.log(typeof hex, hex)
+          const buffer = Buffer.allocUnsafe(6)
+          // buffer.writeUInt32BE(id, 0)
+          buffer.writeUIntBE(id, 0, 6)
+          console.log(json, typeof id, id, buffer)
+          const { area, dbNr, start, amount, wordLen } = TAG
+          const done = await plc.write(area, dbNr, start, amount, wordLen, buffer)
+          sendJson(res, { id, written: done })
         })
     })
     app.ws(PATH + '/info', { open: ws => ws.subscribe('api/kiosk/info') })
