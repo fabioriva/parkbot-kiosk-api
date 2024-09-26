@@ -53,7 +53,6 @@ class PLC extends EventEmitter {
           const buffer = await this.read(area, dbNr, start, amount, wordLen)
           this.page = buffer.readInt16BE(0)
           this.card = buffer.readInt16BE(2)
-          console.log(this)
         } else {
           this.online = this.client.Connect()
           this.online ? logger.info('Connected to PLC %s', this.ip) : logger.info('Connecting to PLC %s ...', this.ip)
