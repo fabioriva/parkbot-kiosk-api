@@ -89,10 +89,6 @@ const main = async () => {
     })
     app.post(PATH + '/tag', async (res, req) => {
       log(req)
-      // res.onAborted(() => {
-      //   res.aborted = true
-      // })
-      // sendJson(res, { hello: 'world' })
       readJson(
         res,
         async json => {
