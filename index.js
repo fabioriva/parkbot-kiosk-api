@@ -14,21 +14,21 @@ const log = (req) => {
 
 const CLS = {
   area: 0x84,
-  dbNr: 37,
+  dbNr: Number(process.env.DB_NR),
   start: 4,
   amount: 2,
   wordLen: 0x02
 }
 const PIN = {
   area: 0x84,
-  dbNr: 37,
+  dbNr: Number(process.env.DB_NR),
   start: 6,
   amount: 2,
   wordLen: 0x02
 }
 const TAG = {
   area: 0x84,
-  dbNr: 37,
+  dbNr: Number(process.env.DB_NR),
   start: 8,
   amount: 8,
   wordLen: 0x02
@@ -77,14 +77,14 @@ const main = async () => {
       readJson(
         res,
         async json => {
-          const regexp = /^[a-fA-F0-9]{3}$/
+          const { pin } = json
+          // const regexp = /^[a-fA-F0-9]{3}$/
           // console.log(json, regexp.test(json.pin))
           const buffer = Buffer.alloc(2)
-          buffer.writeInt16BE(parseInt(json.pin, 16), 0) // string to hex
+          buffer.writeInt16BE(parseInt(pin, 16), 0) // string to hex
           const { area, dbNr, start, amount, wordLen } = PIN
           const done = await plc.write(area, dbNr, start, amount, wordLen, buffer)
-          // console.log(buffer, done)
-          sendJson(res, json)
+          sendJson(res, { pin, written: done })
         })
     })
     app.post(PATH + '/tag', async (res, req) => {

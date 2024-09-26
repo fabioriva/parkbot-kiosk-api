@@ -3,6 +3,14 @@ const logger = require('pino')()
 const snap7 = require('node-snap7')
 const util = require('util')
 
+const DATA = {
+  area: 0x84,
+  dbNr: Number(process.env.DB_NR),
+  start: Number(process.env.DB_START),
+  amount: Number(process.env.DB_AMOUNT),
+  wordLen: 0x02
+}
+
 class PLC extends EventEmitter {
   constructor (ip, rack, slot, time) {
     super()
@@ -41,10 +49,11 @@ class PLC extends EventEmitter {
     setTimeout(async () => {
       try {
         if (this.online) {
-          const buffer = await this.read(0x84, 37, 0, 4, 0x02)
+          const { area, dbNr, start, amount, wordLen } = DATA
+          const buffer = await this.read(area, dbNr, start, amount, wordLen)
           this.page = buffer.readInt16BE(0)
           this.card = buffer.readInt16BE(2)
-          // console.log(buffer, this)
+          console.log(this)
         } else {
           this.online = this.client.Connect()
           this.online ? logger.info('Connected to PLC %s', this.ip) : logger.info('Connecting to PLC %s ...', this.ip)
