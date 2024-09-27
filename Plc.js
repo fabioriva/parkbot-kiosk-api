@@ -20,6 +20,14 @@ class PLC extends EventEmitter {
     this.rack = Number(rack)
     this.slot = Number(slot)
     this.time = Number(time)
+    this.data = {
+      lang: 0,
+      page: 0,
+      card: 0,
+      digitNr: 0,
+      errMesg: 0,
+      successMesg: 0
+    }
   }
 
   error (e) {
@@ -51,17 +59,23 @@ class PLC extends EventEmitter {
         if (this.online) {
           const { area, dbNr, start, amount, wordLen } = DATA
           const buffer = await this.read(area, dbNr, start, amount, wordLen)
-          this.page = buffer.readInt16BE(0)
-          this.card = buffer.readInt16BE(2)
+          this.data.lang = buffer.readInt16BE(0)
+          this.data.page = buffer.readInt16BE(2)
+          this.data.card = buffer.readInt16BE(4)
+          this.data.digitNr = buffer.readInt16BE(6)
+          this.data.errMesg = buffer.readInt16BE(8)
+          this.data.successMesg = buffer.readInt16BE(10)
         } else {
           this.online = this.client.Connect()
           this.online ? logger.info('Connected to PLC %s', this.ip) : logger.info('Connecting to PLC %s ...', this.ip)
+          // this.data.lang = buffer.readInt16BE(0)
+          this.data.page = 0
+          this.data.card = 0
+          this.data.digitNr = 0
+          this.data.errMesg = 0
+          this.data.successMesg = 0
         }
-        this.publish('api/kiosk/info', {
-          card: this.card,
-          comm: this.online,
-          page: this.page
-        })
+        this.publish('api/kiosk/info', { comm: this.online, ...this.data })
       } catch (e) {
         this.error(e)
       }

@@ -15,21 +15,21 @@ const log = (req) => {
 const CLS = {
   area: 0x84,
   dbNr: Number(process.env.DB_NR),
-  start: 4,
+  start: 14,
   amount: 2,
   wordLen: 0x02
 }
 const PIN = {
   area: 0x84,
   dbNr: Number(process.env.DB_NR),
-  start: 6,
+  start: 16,
   amount: 2,
   wordLen: 0x02
 }
 const TAG = {
   area: 0x84,
   dbNr: Number(process.env.DB_NR),
-  start: 8,
+  start: 18,
   amount: 8,
   wordLen: 0x02
 }
